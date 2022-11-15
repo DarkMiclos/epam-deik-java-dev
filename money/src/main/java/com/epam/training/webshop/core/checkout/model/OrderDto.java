@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Value;
 
 @Value
-public class Order {
+public class OrderDto {
 
     private final List<ProductDto> productDtoList;
     private final Money netPrice;

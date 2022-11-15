@@ -3,7 +3,7 @@ package com.epam.training.webshop.core.checkout.impl;
 import com.epam.training.webshop.core.cart.Cart;
 import com.epam.training.webshop.core.cart.grossprice.GrossPriceCalculator;
 import com.epam.training.webshop.core.checkout.CheckoutService;
-import com.epam.training.webshop.core.checkout.model.Order;
+import com.epam.training.webshop.core.checkout.model.OrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +20,9 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public Order checkout(Cart cart) {
-        Order order = new Order(cart.getProductDtoList(), cart.getAggregatedNetPrice(), grossPriceCalculator.getAggregatedGrossPrice(cart));
-        checkoutObservable.notifyObservers(order);
-        return order;
+    public OrderDto checkout(Cart cart) {
+        OrderDto orderDto = new OrderDto(cart.getProductDtoList(), cart.getAggregatedNetPrice(), grossPriceCalculator.getAggregatedGrossPrice(cart));
+        checkoutObservable.notifyObservers(orderDto);
+        return orderDto;
     }
 }
