@@ -13,9 +13,9 @@ public class MovieDto {
     }
 
     public static class Builder {
-        private  String name;
-        private  String genre;
-        private  Integer length;
+        private String name;
+        private String genre;
+        private Integer length;
 
         public Builder withName(String name) {
             this.name = name;
