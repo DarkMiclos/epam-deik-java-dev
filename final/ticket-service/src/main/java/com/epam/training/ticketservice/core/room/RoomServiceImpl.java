@@ -49,10 +49,9 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room getRoom(String roomName) {
         Optional<Room> optionalRoom = roomRepository.findByName(roomName);
-        if(optionalRoom.isEmpty()) {
+        if (optionalRoom.isEmpty()) {
             throw new IllegalArgumentException("There is no such room");
-        }
-        else {
+        } else {
             return  optionalRoom.get();
         }
     }

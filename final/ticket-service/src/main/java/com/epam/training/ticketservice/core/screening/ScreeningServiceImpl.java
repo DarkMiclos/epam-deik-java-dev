@@ -22,10 +22,10 @@ public class ScreeningServiceImpl implements ScreeningService {
     
     @Override
     public void createScreening(ScreeningDto screeningDto) {
-        if(movieRepository.findByName(screeningDto.getMovie().getName()).isEmpty()) {
+        if (movieRepository.findByName(screeningDto.getMovie().getName()).isEmpty()) {
             throw new IllegalArgumentException("There is no movie with this name");
         }
-        if(roomRepository.findByName(screeningDto.getRoom().getName()).isEmpty()) {
+        if (roomRepository.findByName(screeningDto.getRoom().getName()).isEmpty()) {
             throw new IllegalArgumentException("There is no room with this name");
         }
         checkIfTheRoomIsFreeAtTheGivenDate(screeningDto);
@@ -37,14 +37,14 @@ public class ScreeningServiceImpl implements ScreeningService {
 
     @Override
     public void deleteScreening(ScreeningDto screeningDto) {
-        Screening screening = null;
-        Optional<Screening> optionalScreening = screeningRepository.findByMovieAndRoomAndBeginningDateOfScreening(screeningDto.getMovie(),
+        Optional<Screening> optionalScreening = screeningRepository
+                .findByMovieAndRoomAndBeginningDateOfScreening(screeningDto.getMovie(),
                 screeningDto.getRoom(),
                 screeningDto.getBeginningDateOfScreening());
-        if(optionalScreening.isEmpty()) {
+        if (optionalScreening.isEmpty()) {
             throw new IllegalArgumentException("There is no such screening");
         }
-        screening = optionalScreening.get();
+        Screening screening = optionalScreening.get();
         screeningRepository.delete(screening);
     }
 
@@ -71,7 +71,7 @@ public class ScreeningServiceImpl implements ScreeningService {
         long endOfCurrentScreening = calendarOfDto.getTime().getTime();
         List<Screening> screenings = screeningRepository.findByRoomName(screeningDto.getRoom().getName());
         
-        for(var screening : screenings) {
+        for (var screening : screenings) {
             Calendar calendarOfScreenings = Calendar.getInstance();
             calendarOfScreenings.setTime(screening.getBeginningDateOfScreening());
             long startOfScreening = calendarOfScreenings.getTime().getTime();
@@ -80,14 +80,15 @@ public class ScreeningServiceImpl implements ScreeningService {
             calendarOfScreenings.add(Calendar.MINUTE, 10);
             long breakEndOfScreening = calendarOfScreenings.getTime().getTime();
             
-            if((startOfScreening <= startOfCurrentScreening && endOfScreening >= startOfCurrentScreening) || 
-                    (startOfScreening <= endOfCurrentScreening && endOfScreening >= endOfCurrentScreening)) {
+            if ((startOfScreening <= startOfCurrentScreening && endOfScreening >= startOfCurrentScreening) 
+                    || (startOfScreening <= endOfCurrentScreening && endOfScreening >= endOfCurrentScreening)) {
                 throw new IllegalArgumentException("There is an overlapping screening");
             }
             
-            if((endOfScreening <= startOfCurrentScreening && breakEndOfScreening >= startOfCurrentScreening) ||
-                    (endOfScreening <= endOfCurrentScreening && breakEndOfScreening >= endOfCurrentScreening)) {
-                throw new IllegalArgumentException("This would start in the break period after another screening in this room");
+            if ((endOfScreening <= startOfCurrentScreening && breakEndOfScreening >= startOfCurrentScreening) 
+                    || (endOfScreening <= endOfCurrentScreening && breakEndOfScreening >= endOfCurrentScreening)) {
+                throw new IllegalArgumentException(
+                        "This would start in the break period after another screening in this room");
             }
         }
     }

@@ -50,10 +50,9 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie getMovie(String movieName) {
         Optional<Movie> optionalMovie = movieRepository.findByName(movieName);
-        if(optionalMovie.isEmpty()) {
+        if (optionalMovie.isEmpty()) {
             throw new IllegalArgumentException("There is no such movie");
-        }
-        else {
+        } else {
             return optionalMovie.get();
         }
     }

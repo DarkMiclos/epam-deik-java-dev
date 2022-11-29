@@ -34,8 +34,7 @@ public class ScreeningCommand {
                     .build();
             screeningService.createScreening(screeningDto);
             return "Screening created!";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return e.getMessage();
         }
         
@@ -53,8 +52,7 @@ public class ScreeningCommand {
                     .build();
             screeningService.deleteScreening(screeningDto);
             return "Screening deleted!";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return e.getMessage();
         }
         
@@ -63,12 +61,15 @@ public class ScreeningCommand {
     @ShellMethod(key = "list screenings", value = "Lists the existing screenings")
     public void listScreenings() {
         List<ScreeningDto> screeningDtoList = screeningService.getScreeningList();
-        if(screeningDtoList.isEmpty()) {
+        if (screeningDtoList.isEmpty()) {
             System.out.println("There are no screenings");
         }
-        for(var screening : screeningDtoList) {
-            System.out.println(screening.getMovie().getName() + " (" + screening.getMovie().getGenre() + ", " 
-                    + screening.getMovie().getLengthInMinutes() + " minutes), screened in room " + screening.getRoom().getName() 
+        for (var screening : screeningDtoList) {
+            System.out.println(screening.getMovie().getName() 
+                    + " (" + screening.getMovie().getGenre() + ", " 
+                    + screening.getMovie().getLengthInMinutes() 
+                    + " minutes), screened in room " 
+                    + screening.getRoom().getName() 
                     + ", at " + convertDateToString(screening.getBeginningDateOfScreening()));
         }
     }

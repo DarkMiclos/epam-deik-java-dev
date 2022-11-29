@@ -44,11 +44,12 @@ public class RoomCommand {
     @ShellMethod(key = "list rooms", value = "Lists all of the existing rooms.")
     public void listRooms() {
         List<RoomDto> roomDtoList = roomService.getRoomList();
-        if(roomDtoList.isEmpty()) {
+        if (roomDtoList.isEmpty()) {
             System.out.println("There are no rooms at the moment");
         }
         for (var roomDto : roomDtoList) {
-            System.out.println("Room " + roomDto.getName() + " with " + roomDto.getNumberOfSeats() + " seats, " + roomDto.getNumberOfRows() 
+            System.out.println("Room " + roomDto.getName() + " with " + roomDto.getNumberOfSeats() 
+                    + " seats, " + roomDto.getNumberOfRows() 
                     + " rows and " + roomDto.getNumberOfColumns() + " columns");
         }
     }

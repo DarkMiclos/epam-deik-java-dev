@@ -43,8 +43,7 @@ public class MovieCommand {
                     .build();
             movieService.updateMovie(movieDto);
             return "Movie updated!";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return e.getMessage();
         }
         
@@ -56,8 +55,7 @@ public class MovieCommand {
         try {
             movieService.deleteMovieByName(movieName);
             return "Movie deleted!";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
@@ -65,11 +63,12 @@ public class MovieCommand {
     @ShellMethod(key = "list movies", value = "Lists the existing movies")
     public void listMovies() {
         List<MovieDto> movieDtoList = movieService.getMovieList();
-        if(movieDtoList.isEmpty()) {
+        if (movieDtoList.isEmpty()) {
             System.out.println("There are no movies at the moment");
         }
         for (var movieDto : movieDtoList) {
-            System.out.println(movieDto.getName() + " (" + movieDto.getGenre() + ", " + movieDto.getLength() + " minutes)");
+            System.out.println(movieDto.getName() + " (" + movieDto.getGenre() 
+                    + ", " + movieDto.getLength() + " minutes)");
         }
     }
 
