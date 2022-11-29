@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +27,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void updateRoom(RoomDto roomDto) {
-        Room room = roomRepository.findByName(roomDto.getName()).get();
+        Room room = getRoom(roomDto.getName());
         room.setNumberOfRows(roomDto.getNumberOfRows());
         room.setNumberOfColumns(roomDto.getNumberOfColumns());
         roomRepository.save(room);
@@ -34,7 +35,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void deleteRoom(String name) {
-        Room room = roomRepository.findByName(name).get();
+        Room room = getRoom(name);
         roomRepository.delete(room);
     }
 
@@ -43,6 +44,17 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findAll().stream()
                 .map(this::convertEntityToDto)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Room getRoom(String roomName) {
+        Optional<Room> optionalRoom = roomRepository.findByName(roomName);
+        if(optionalRoom.isEmpty()) {
+            throw new IllegalArgumentException("There is no such room");
+        }
+        else {
+            return  optionalRoom.get();
+        }
     }
 
     private RoomDto convertEntityToDto(Room room) {

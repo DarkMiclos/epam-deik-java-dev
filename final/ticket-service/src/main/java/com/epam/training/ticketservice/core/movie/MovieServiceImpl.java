@@ -26,7 +26,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void updateMovie(MovieDto movieDto) {
-        Movie movie = movieRepository.findByName(movieDto.getName()).get();
+        Movie movie = getMovie(movieDto.getName());
         movie.setGenre(movieDto.getGenre());
         movie.setLengthInMinutes(movieDto.getLength());
         movieRepository.save(movie);
@@ -35,7 +35,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void deleteMovieByName(String movieName) {
-        Movie movie = movieRepository.findByName(movieName).get();
+        Movie movie = getMovie(movieName);
         movieRepository.delete(movie);
     }
 
@@ -45,6 +45,17 @@ public class MovieServiceImpl implements MovieService {
                 movieDto.getGenre(),
                 movieDto.getLength());
         movieRepository.save(movie);
+    }
+    
+    @Override
+    public Movie getMovie(String movieName) {
+        Optional<Movie> optionalMovie = movieRepository.findByName(movieName);
+        if(optionalMovie.isEmpty()) {
+            throw new IllegalArgumentException("There is no such movie");
+        }
+        else {
+            return optionalMovie.get();
+        }
     }
 
     private MovieDto convertEntityToDto(Movie movie) {

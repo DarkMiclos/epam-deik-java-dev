@@ -22,32 +22,44 @@ public class MovieCommand {
 
     @ShellMethodAvailability("isAvailable")
     @ShellMethod(key = "create movie", value = "Creates a movie. Only available for admin users.")
-    public MovieDto createMovie(String movieName, String genre, Integer lengthInMinutes) {
+    public String createMovie(String movieName, String genre, Integer lengthInMinutes) {
         MovieDto movieDto = MovieDto.builder()
                 .withName(movieName)
                 .withGenre(genre)
                 .withLength(lengthInMinutes)
                 .build();
         movieService.createMovie(movieDto);
-        return movieDto;
+        return "Movie created!";
     }
 
     @ShellMethodAvailability("isAvailable")
     @ShellMethod(key = "update movie", value = "Updates an existing movie. Only available for admin users.")
-    public MovieDto updateMovie(String movieName, String genre, Integer lengthInMinutes) {
-        MovieDto movieDto = MovieDto.builder()
-                .withName(movieName)
-                .withGenre(genre)
-                .withLength(lengthInMinutes)
-                .build();
-        movieService.updateMovie(movieDto);
-        return movieDto;
+    public String updateMovie(String movieName, String genre, Integer lengthInMinutes) {
+        try {
+            MovieDto movieDto = MovieDto.builder()
+                    .withName(movieName)
+                    .withGenre(genre)
+                    .withLength(lengthInMinutes)
+                    .build();
+            movieService.updateMovie(movieDto);
+            return "Movie updated!";
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
+        
     }
 
     @ShellMethodAvailability("isAvailable")
     @ShellMethod(key = "delete movie", value = "Delete an existing movie. Only available for admin users.")
-    public void deleteMovie(String movieName) {
-        movieService.deleteMovieByName(movieName);
+    public String deleteMovie(String movieName) {
+        try {
+            movieService.deleteMovieByName(movieName);
+            return "Movie deleted!";
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
     }
     
     @ShellMethod(key = "list movies", value = "Lists the existing movies")
