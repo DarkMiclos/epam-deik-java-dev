@@ -1,7 +1,12 @@
 package com.epam.training.ticketservice.ui.command;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import com.epam.training.ticketservice.core.book.BookingService;
+import com.epam.training.ticketservice.core.book.model.BookingDto;
 import com.epam.training.ticketservice.core.user.UserService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.User;
@@ -14,6 +19,8 @@ import org.springframework.shell.standard.ShellMethod;
 public class UserCommand {
 
     private final UserService userService;
+    
+    private final BookingService bookingService;
 
     @ShellMethod(key = "sign out", value = "User logout")
     public String signOut() {
@@ -26,7 +33,16 @@ public class UserCommand {
 
     @ShellMethod(key = "sign in privileged", value = "Admin login")
     public String signInPrivileged(String username, String password) {
-        Optional<UserDto> user = userService.signInPrivileged(username, password);
+        Optional<UserDto> user = userService.signIn(username, password, true);
+        if (user.isEmpty()) {
+            return "Login failed due to incorrect credentials";
+        }
+        return user.get() + " is successfully logged in!";
+    }
+    
+    @ShellMethod(key = "sign in", value = "User login")
+    public String signIn(String userName, String password) {
+        Optional<UserDto> user = userService.signIn(userName, password, false);
         if (user.isEmpty()) {
             return "Login failed due to incorrect credentials";
         }
@@ -39,10 +55,20 @@ public class UserCommand {
         if (user.isEmpty()) {
             return "You are not signed in";
         }
-        return "Signed in with privileged account '".concat(user.get().getUsername()).concat("'");
+        if (user.get().getRole().equals(User.Role.ADMIN)) {
+            return "Signed in with privileged account '".concat(user.get().getUsername()).concat("'");
+        }
+        List<BookingDto> bookingDtoList = bookingService.getBookingsByUser(user.get());
+        if (bookingDtoList.isEmpty()) {
+            return "Signed in with account '" + user.get().getUsername() + "'\n"
+                    + "You have not booked any tickets yet";
+        }
+        return "Signed in with account '" + user.get().getUsername()
+                + "'\nYour previous bookings are\n"
+                + createBookingListOutput(bookingDtoList);
     }
 
-    @ShellMethod(key = "user register", value = "User registration")
+    @ShellMethod(key = "sign up", value = "User registration")
     public String signUp(String userName, String password) {
         try {
             userService.signUp(userName, password);
@@ -50,5 +76,27 @@ public class UserCommand {
         } catch (Exception e) {
             return "Registration failed!";
         }
+    }
+    
+    private String createBookingListOutput(List<BookingDto> bookingDtoList) {
+        String output = "";
+        for (var booking : bookingDtoList) {
+            output += "Seats ";
+            for (var seat : booking.getListOfSeats()) {
+                output += seat.toString() + ", ";
+            }
+            output = output.substring(0, output.length() - 2);
+            output += " on " + booking.getScreening().getMovie().getName() + " ";
+            output += "in room " + booking.getScreening().getRoom().getName() + " ";
+            output += "starting at " 
+                    + convertDateToString(booking.getScreening().getBeginningDateOfScreening()) 
+                    + " for " + booking.getListOfSeats().size() * 1500 + "HUF";
+        }
+        return output;
+    }
+
+    private String convertDateToString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                .format(date);
     }
 }

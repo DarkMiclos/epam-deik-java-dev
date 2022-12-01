@@ -181,6 +181,11 @@
                         </goals>
                     </execution>
                     <execution>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/epam/training/**/command/**</exclude>
+                            </excludes>
+                        </configuration>
                         <id>report</id>
                         <phase>prepare-package</phase>
                         <goals>

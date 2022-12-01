@@ -5,10 +5,8 @@ import com.epam.training.ticketservice.core.user.model.UserDto;
 import java.util.Optional;
 
 public interface UserService {
-
-    Optional<UserDto> signIn(String username, String password);
     
-    Optional<UserDto> signInPrivileged(String username, String password);
+    Optional<UserDto> signIn(String username, String password, boolean isAdmin);
 
     Optional<UserDto> signOut();
 

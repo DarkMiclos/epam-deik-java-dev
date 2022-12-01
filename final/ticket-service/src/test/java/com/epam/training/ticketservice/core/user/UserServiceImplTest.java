@@ -26,7 +26,7 @@ public class UserServiceImplTest {
         when(userRepository.findByUsernameAndPassword("admin", "admin")).thenReturn(Optional.of(user));
         
         //When
-        Optional<UserDto> actual = underTest.signInPrivileged("admin", "admin");
+        Optional<UserDto> actual = underTest.signIn("admin", "admin", true);
         
         //Then
         assertEquals(expected.get().getUsername(), actual.get().getUsername());
@@ -42,7 +42,7 @@ public class UserServiceImplTest {
         when(userRepository.findByUsernameAndPassword("user", "user")).thenReturn(Optional.of(user));
 
         //When
-        Optional<UserDto> actual = underTest.signIn("user", "user");
+        Optional<UserDto> actual = underTest.signIn("user", "user", false);
 
         //Then
         assertEquals(expected.get().getUsername(), actual.get().getUsername());
@@ -57,7 +57,7 @@ public class UserServiceImplTest {
         when(userRepository.findByUsernameAndPassword("dummy", "dummy")).thenReturn(Optional.empty());
         
         //When
-        Optional<UserDto> actual = underTest.signInPrivileged("dummy", "dummy");
+        Optional<UserDto> actual = underTest.signIn("dummy", "dummy", true);
 
         // Then
         assertEquals(expected, actual);
@@ -81,7 +81,7 @@ public class UserServiceImplTest {
         // Given
         User user = new User("user", "password", USER);
         when(userRepository.findByUsernameAndPassword("user", "pass")).thenReturn(Optional.of(user));
-        Optional<UserDto> expected = underTest.signIn("user", "password");
+        Optional<UserDto> expected = underTest.signIn("user", "password", false);
 
         // When
         Optional<UserDto> actual = underTest.signOut();
@@ -95,7 +95,7 @@ public class UserServiceImplTest {
         // Given
         User user = new User("user", "password", USER);
         when(userRepository.findByUsernameAndPassword("user", "pass")).thenReturn(Optional.of(user));
-        Optional<UserDto> expected = underTest.signIn("user", "password");
+        Optional<UserDto> expected = underTest.signIn("user", "password", false);
 
         // When
         Optional<UserDto> actual = underTest.describe();

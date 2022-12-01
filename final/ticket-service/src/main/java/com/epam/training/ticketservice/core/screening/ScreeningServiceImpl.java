@@ -1,6 +1,8 @@
 package com.epam.training.ticketservice.core.screening;
 
+import com.epam.training.ticketservice.core.movie.persistence.entity.Movie;
 import com.epam.training.ticketservice.core.movie.persistence.repository.MovieRepository;
+import com.epam.training.ticketservice.core.room.persistence.entity.Room;
 import com.epam.training.ticketservice.core.room.persistence.repository.RoomRepository;
 import com.epam.training.ticketservice.core.screening.model.ScreeningDto;
 import com.epam.training.ticketservice.core.screening.persistence.entity.Screening;
@@ -9,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,7 +57,20 @@ public class ScreeningServiceImpl implements ScreeningService {
                 .map(this::convertEntityToDto)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
+    public Screening getScreening(Movie movie, Room room, Date beginningDate) {
+        Optional<Screening> optionalScreening = screeningRepository.findByMovieAndRoomAndBeginningDateOfScreening(
+                movie,
+                room,
+                beginningDate);
+        if (optionalScreening.isEmpty()) {
+            throw new IllegalArgumentException("There is no such screening");
+        } else {
+            return  optionalScreening.get();
+        }
+    }
+
     private ScreeningDto convertEntityToDto(Screening screening) {
         return ScreeningDto.builder()
                 .withMovie(screening.getMovie())

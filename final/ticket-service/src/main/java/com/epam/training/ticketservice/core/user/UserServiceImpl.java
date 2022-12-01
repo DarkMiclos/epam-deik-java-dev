@@ -16,19 +16,12 @@ public class UserServiceImpl implements UserService {
     private UserDto loggedInUser = null;
 
     @Override
-    public Optional<UserDto> signIn(String username, String password) {
+    public Optional<UserDto> signIn(String username, String password, boolean isAdmin) {
         Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
         if (user.isEmpty()) {
             return Optional.empty();
         }
-        loggedInUser = new UserDto(user.get().getUsername(), user.get().getRole());
-        return describe();
-    }
-
-    @Override
-    public Optional<UserDto> signInPrivileged(String username, String password) {
-        Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
-        if (user.isEmpty() || user.get().getRole().equals(User.Role.USER)) {
+        if (isAdmin && user.get().getRole().equals(User.Role.USER)) {
             return Optional.empty();
         }
         loggedInUser = new UserDto(user.get().getUsername(), user.get().getRole());
