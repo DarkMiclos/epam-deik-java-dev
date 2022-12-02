@@ -158,6 +158,57 @@ public class PriceComponentServiceImplTest {
         verify(priceComponentRepository).save(ENTITY4);
         assertEquals(expected, actual);
     }
+
+    @Test
+    void testAttachPriceComponentToRoomFailsBecauseRoomDoesNotExist() {
+        //Given
+        when(priceComponentRepository.findByName(ENTITY4.getName())).thenReturn(Optional.of(ENTITY4));
+        when(roomRepository.findByName(ROOM.getName())).thenReturn(Optional.empty());
+        Set<Room> expected = Set.of();
+
+        //When
+        underTest.attachPriceComponentToRoom(ENTITY4.getName(), ROOM.getName());
+        Set<Room> actual = ENTITY4.getRooms();
+
+        //Then
+        verify(priceComponentRepository).findByName(ENTITY4.getName());
+        verify(roomRepository).findByName(ROOM.getName());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testAttachPriceComponentToMovieFailsBecauseMovieDoesNotExist() {
+        //Given
+        when(priceComponentRepository.findByName(ENTITY4.getName())).thenReturn(Optional.of(ENTITY4));
+        when(movieRepository.findByName(MOVIE.getName())).thenReturn(Optional.empty());
+        Set<Movie> expected = Set.of();
+
+        //When
+        underTest.attachPriceComponentToMovie(ENTITY4.getName(), MOVIE.getName());
+        Set<Movie> actual = ENTITY4.getMovies();
+
+        //Then
+        verify(priceComponentRepository).findByName(ENTITY4.getName());
+        verify(movieRepository).findByName(MOVIE.getName());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testAttachPriceComponentToScreeningFailsBecauseScreeningDoesNotExist() {
+        //Given
+        when(priceComponentRepository.findByName(ENTITY4.getName())).thenReturn(Optional.of(ENTITY4));
+        when(screeningRepository.findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE)).thenReturn(Optional.empty());
+        Set<Screening> expected = Set.of();
+
+        //When
+        underTest.attachPriceComponentToScreening(ENTITY4.getName(), SCREENING_DTO);
+        Set<Screening> actual = ENTITY4.getScreenings();
+
+        //Then
+        verify(priceComponentRepository).findByName(ENTITY4.getName());
+        verify(screeningRepository).findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE);
+        assertEquals(expected, actual);
+    }
     
     @Test
     void testShowPriceForScreeningShouldCalculatePriceBasedOnPriceComponents() {

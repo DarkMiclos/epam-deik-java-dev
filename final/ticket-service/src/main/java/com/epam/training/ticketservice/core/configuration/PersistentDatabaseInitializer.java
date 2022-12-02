@@ -21,7 +21,10 @@ public class PersistentDatabaseInitializer {
     @PostConstruct
     public void init() {
         User admin = new User("admin", "admin", User.Role.ADMIN);
-        userRepository.save(admin);
+        Optional<User> user = userRepository.findByUsername(admin.getUsername());
+        if (user.isEmpty()) {
+            userRepository.save(admin);
+        }
 
         Optional<PriceComponent> basePrice = priceComponentRepository.findByName("BasePrice");
         if (basePrice.isEmpty()) {
