@@ -36,4 +36,12 @@ public class PriceComponent {
         this.name = name;
         this.amount = amount;
     }
+
+    public PriceComponent(String name, Integer amount, Set<Room> rooms, Set<Movie> movies, Set<Screening> screenings) {
+        this.name = name;
+        this.amount = amount;
+        this.rooms = rooms;
+        this.movies = movies;
+        this.screenings = screenings;
+    }
 }

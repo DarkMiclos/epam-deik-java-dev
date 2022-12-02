@@ -29,6 +29,7 @@ public class ScreeningServiceImplTest {
     private static final Room ROOM = new Room("asd", 10, 10);
     private static final Date DATE = convertStringToDate("2021-03-15 10:45");
     private static final Date DATE2 = convertStringToDate("2021-03-15 13:37");
+    private static final Date DATE3 = convertStringToDate("2021-03-15 10:40");
     private static final Screening ENTITY = new Screening(MOVIE, ROOM, DATE);
     private static final ScreeningDto DTO = ScreeningDto.builder()
             .withMovie(MOVIE)
@@ -40,6 +41,12 @@ public class ScreeningServiceImplTest {
             .withRoom(ROOM)
             .withBeginningDateOfScreening(DATE2)
             .build();
+    private static final ScreeningDto DTO3 = ScreeningDto.builder()
+            .withMovie(MOVIE)
+            .withRoom(ROOM)
+            .withBeginningDateOfScreening(DATE3)
+            .build();
+    
     private final MovieRepository movieRepository = mock(MovieRepository.class);
     private final RoomRepository roomRepository = mock(RoomRepository.class);
     private final ScreeningRepository screeningRepository = mock(ScreeningRepository.class);
@@ -87,7 +94,7 @@ public class ScreeningServiceImplTest {
     }
     
     @Test
-    void testCreateScreeningShouldThrowExceptionWhenThereIsAnOverlappingScreening() {
+    void testCreateScreeningShouldThrowExceptionWhenThereIsAnOverlappingScreeningBecauseOfSameDate() {
         //Given
         when(movieRepository.findByName("Interstellar")).thenReturn(Optional.of(MOVIE));
         when(roomRepository.findByName("asd")).thenReturn(Optional.of(ROOM));
@@ -99,6 +106,28 @@ public class ScreeningServiceImplTest {
                 () -> underTest.createScreening(DTO));
         
         //Then
+        verify(movieRepository).findByName("Interstellar");
+        verify(roomRepository).findByName("asd");
+        verify(screeningRepository).findByRoomName("asd");
+        assertEquals(expected.getMessage(), actual.getMessage());
+    }
+
+    @Test
+    void testCreateScreeningShouldThrowExceptionWhenThereIsAnOverlappingScreeningBecauseEndDateIsBetweenOtherScreening() {
+        //Given
+        when(movieRepository.findByName("Interstellar")).thenReturn(Optional.of(MOVIE));
+        when(roomRepository.findByName("asd")).thenReturn(Optional.of(ROOM));
+        when(screeningRepository.findByRoomName("asd")).thenReturn(List.of(ENTITY));
+        IllegalArgumentException expected = new IllegalArgumentException("There is an overlapping screening");
+
+        //When
+        IllegalArgumentException actual = assertThrows(IllegalArgumentException.class,
+                () -> underTest.createScreening(DTO3));
+
+        //Then
+        verify(movieRepository).findByName("Interstellar");
+        verify(roomRepository).findByName("asd");
+        verify(screeningRepository).findByRoomName("asd");
         assertEquals(expected.getMessage(), actual.getMessage());
     }
     
@@ -115,6 +144,9 @@ public class ScreeningServiceImplTest {
                 () -> underTest.createScreening(DTO2));
 
         //Then
+        verify(movieRepository).findByName("Interstellar");
+        verify(roomRepository).findByName("asd");
+        verify(screeningRepository).findByRoomName("asd");
         assertEquals(expected.getMessage(), actual.getMessage());
     }
     
@@ -156,6 +188,35 @@ public class ScreeningServiceImplTest {
         //Then
         assertEquals(expected, actual);
         verify(screeningRepository).findAll();
+    }
+    
+    @Test
+    void testGetScreeningShouldThrowExceptionWhenScreeningIsNotFound() {
+        //Given
+        when(screeningRepository.findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE)).thenReturn(Optional.empty());
+        IllegalArgumentException expected = new IllegalArgumentException("There is no such screening");
+        
+        //When
+        IllegalArgumentException actual = assertThrows(IllegalArgumentException.class,
+                () -> underTest.getScreening(MOVIE, ROOM, DATE));
+        
+        //Then
+        verify(screeningRepository).findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE);
+        assertEquals(expected.getMessage(), actual.getMessage());
+    }
+    
+    @Test
+    void testGetScreeningShouldReturnScreeningWhenParametersAreCorrectAndScreeningExists() {
+        //Given
+        when(screeningRepository.findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE)).thenReturn(Optional.of(ENTITY));
+        Screening expected = ENTITY;
+        
+        //When
+        Screening actual = underTest.getScreening(MOVIE, ROOM, DATE);
+        
+        //Then
+        verify(screeningRepository).findByMovieAndRoomAndBeginningDateOfScreening(MOVIE, ROOM, DATE);
+        assertEquals(expected, actual);
     }
 
     static Date convertStringToDate(String date) {

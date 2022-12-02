@@ -1,8 +1,5 @@
 package com.epam.training.ticketservice.core.configuration;
 
-
-import javax.annotation.PostConstruct;
-
 import com.epam.training.ticketservice.core.pricecomponent.persistence.entity.PriceComponent;
 import com.epam.training.ticketservice.core.pricecomponent.persistence.repository.PriceComponentRepository;
 import com.epam.training.ticketservice.core.user.persistence.entity.User;
@@ -11,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Component
-@Profile("ci")
+@Profile("!ci")
 @RequiredArgsConstructor
-public class InMemoryDatabaseInitializer {
-
+public class PersistentDatabaseInitializer {
     private final UserRepository userRepository;
     private final PriceComponentRepository priceComponentRepository;
 

@@ -46,12 +46,14 @@ public class BookingServiceImplTest {
     private static final BookingDto CORRECT_DTO = BookingDto.builder()
             .withScreening(SCREENING)
             .withListOfSeat(CORRECT_LIST)
+            .withPrice(1500)
             .build();
     
     private static final Booking INVALID_ENTITY = new Booking(SCREENING, INVALID_LIST, USER2, 1500);
     private static final BookingDto INVALID_DTO = BookingDto.builder()
             .withScreening(SCREENING)
             .withListOfSeat(INVALID_LIST)
+            .withPrice(1500)
             .build();
     
     private static final UserDto USER_DTO = new UserDto(USER2.getUsername(), USER2.getRole());
