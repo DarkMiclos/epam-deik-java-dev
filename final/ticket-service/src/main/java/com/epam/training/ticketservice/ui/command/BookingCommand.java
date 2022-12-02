@@ -1,15 +1,14 @@
 package com.epam.training.ticketservice.ui.command;
 
-import com.epam.training.ticketservice.core.book.BookingService;
-import com.epam.training.ticketservice.core.book.model.BookingDto;
+import com.epam.training.ticketservice.core.booking.BookingService;
+import com.epam.training.ticketservice.core.booking.model.BookingDto;
 import com.epam.training.ticketservice.core.movie.MovieService;
+import com.epam.training.ticketservice.core.pricecomponent.PriceComponentService;
 import com.epam.training.ticketservice.core.room.RoomService;
 import com.epam.training.ticketservice.core.screening.ScreeningService;
 import com.epam.training.ticketservice.core.screening.persistence.entity.Screening;
 import com.epam.training.ticketservice.core.seat.Seat;
 import com.epam.training.ticketservice.core.seat.SeatRepository;
-import com.epam.training.ticketservice.core.user.UserService;
-import com.epam.training.ticketservice.core.user.persistence.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -28,6 +27,7 @@ public class BookingCommand {
     private final MovieService movieService;
     private final RoomService roomService;
     private final ScreeningService screeningService;
+    private final PriceComponentService priceComponentService;
     private final SeatRepository seatRepository;
     
     @ShellMethod(key = "book", value = "Books a ticket for an existing screening.")
@@ -45,7 +45,7 @@ public class BookingCommand {
             bookService.createBooking(bookDto);
             return "Seats booked: " + formatListOfSeatsForOutput(seats) 
                     + "; the price for this booking is "
-                    + seats.size() * 1500 + " HUF";
+                    + seats.size() * priceComponentService.getBasePrice() + " HUF";
         } catch (Exception e) {
             return e.getMessage();
         }

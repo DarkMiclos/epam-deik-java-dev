@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.epam.training.ticketservice.core.book.BookingService;
-import com.epam.training.ticketservice.core.book.model.BookingDto;
+import com.epam.training.ticketservice.core.booking.BookingService;
+import com.epam.training.ticketservice.core.booking.model.BookingDto;
+import com.epam.training.ticketservice.core.pricecomponent.PriceComponentService;
 import com.epam.training.ticketservice.core.user.UserService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.User;
@@ -21,6 +22,8 @@ public class UserCommand {
     private final UserService userService;
     
     private final BookingService bookingService;
+    
+    private final PriceComponentService priceComponentService;
 
     @ShellMethod(key = "sign out", value = "User logout")
     public String signOut() {
@@ -90,7 +93,7 @@ public class UserCommand {
             output += "in room " + booking.getScreening().getRoom().getName() + " ";
             output += "starting at " 
                     + convertDateToString(booking.getScreening().getBeginningDateOfScreening()) 
-                    + " for " + booking.getListOfSeats().size() * 1500 + "HUF";
+                    + " for " + booking.getListOfSeats().size() * priceComponentService.getBasePrice() + " HUF";//Todo create price for booking
         }
         return output;
     }

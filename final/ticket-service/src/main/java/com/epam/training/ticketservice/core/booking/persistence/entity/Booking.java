@@ -1,4 +1,4 @@
-package com.epam.training.ticketservice.core.book.persistence.entity;
+package com.epam.training.ticketservice.core.booking.persistence.entity;
 
 
 import com.epam.training.ticketservice.core.screening.persistence.entity.Screening;
@@ -7,8 +7,12 @@ import com.epam.training.ticketservice.core.user.persistence.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
 import java.util.List;
 
 @Entity

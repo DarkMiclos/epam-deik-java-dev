@@ -1,8 +1,7 @@
-package com.epam.training.ticketservice.core.book.model;
+package com.epam.training.ticketservice.core.booking.model;
 
 import com.epam.training.ticketservice.core.screening.persistence.entity.Screening;
 import com.epam.training.ticketservice.core.seat.Seat;
-import com.epam.training.ticketservice.core.user.persistence.entity.User;
 import lombok.Value;
 
 import java.util.List;

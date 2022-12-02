@@ -1,8 +1,7 @@
-package com.epam.training.ticketservice.core.book.persistence.repository;
+package com.epam.training.ticketservice.core.booking.persistence.repository;
 
-import com.epam.training.ticketservice.core.book.persistence.entity.Booking;
+import com.epam.training.ticketservice.core.booking.persistence.entity.Booking;
 import com.epam.training.ticketservice.core.room.persistence.entity.Room;
-import com.epam.training.ticketservice.core.user.persistence.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

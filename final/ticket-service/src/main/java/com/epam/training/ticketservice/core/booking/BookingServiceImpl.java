@@ -1,8 +1,8 @@
-package com.epam.training.ticketservice.core.book;
+package com.epam.training.ticketservice.core.booking;
 
-import com.epam.training.ticketservice.core.book.model.BookingDto;
-import com.epam.training.ticketservice.core.book.persistence.entity.Booking;
-import com.epam.training.ticketservice.core.book.persistence.repository.BookingRepository;
+import com.epam.training.ticketservice.core.booking.model.BookingDto;
+import com.epam.training.ticketservice.core.booking.persistence.entity.Booking;
+import com.epam.training.ticketservice.core.booking.persistence.repository.BookingRepository;
 import com.epam.training.ticketservice.core.user.UserService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.User;
