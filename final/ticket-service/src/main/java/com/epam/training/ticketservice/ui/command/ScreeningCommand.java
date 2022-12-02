@@ -6,14 +6,20 @@ import com.epam.training.ticketservice.core.room.RoomService;
 import com.epam.training.ticketservice.core.room.persistence.entity.Room;
 import com.epam.training.ticketservice.core.screening.ScreeningService;
 import com.epam.training.ticketservice.core.screening.model.ScreeningDto;
+import com.epam.training.ticketservice.core.user.UserService;
+import com.epam.training.ticketservice.core.user.model.UserDto;
+import com.epam.training.ticketservice.core.user.persistence.entity.User;
 import lombok.AllArgsConstructor;
+import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellMethodAvailability;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @ShellComponent
 @AllArgsConstructor
@@ -21,7 +27,10 @@ public class ScreeningCommand {
     private final ScreeningService screeningService;
     private final MovieService movieService;
     private final RoomService roomService;
-    
+    private final UserService userService;
+    private final Helper helper = new Helper();
+
+    @ShellMethodAvailability("isAvailable")
     @ShellMethod(key = "create screening", value = "Creates a new screening. Admin command")
     public String createScreening(String movieName, String roomName, String date) throws ParseException {
         try {
@@ -30,7 +39,7 @@ public class ScreeningCommand {
             ScreeningDto screeningDto = ScreeningDto.builder()
                     .withMovie(movie)
                     .withRoom(room)
-                    .withBeginningDateOfScreening(convertStringToDate(date))
+                    .withBeginningDateOfScreening(helper.convertStringToDate(date))
                     .build();
             screeningService.createScreening(screeningDto);
             return "Screening created!";
@@ -40,6 +49,7 @@ public class ScreeningCommand {
         
     }
 
+    @ShellMethodAvailability("isAvailable")
     @ShellMethod(key = "delete screening", value = "Deletes an already existing screening. Admin command")
     public String deleteScreening(String movieName, String roomName, String date) throws ParseException {
         try {
@@ -48,7 +58,7 @@ public class ScreeningCommand {
             ScreeningDto screeningDto = ScreeningDto.builder()
                     .withMovie(movie)
                     .withRoom(room)
-                    .withBeginningDateOfScreening(convertStringToDate(date))
+                    .withBeginningDateOfScreening(helper.convertStringToDate(date))
                     .build();
             screeningService.deleteScreening(screeningDto);
             return "Screening deleted!";
@@ -70,17 +80,14 @@ public class ScreeningCommand {
                     + screening.getMovie().getLengthInMinutes() 
                     + " minutes), screened in room " 
                     + screening.getRoom().getName() 
-                    + ", at " + convertDateToString(screening.getBeginningDateOfScreening()));
+                    + ", at " + helper.convertDateToString(screening.getBeginningDateOfScreening()));
         }
     }
-    
-    private Date convertStringToDate(String date) throws ParseException {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm")
-                .parse(date);
-    }
-    
-    private String convertDateToString(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm")
-                .format(date);
+
+    private Availability isAvailable() {
+        Optional<UserDto> user = userService.describe();
+        return user.isPresent() && user.get().getRole() == User.Role.ADMIN
+                ? Availability.available()
+                : Availability.unavailable("You are not an admin!");
     }
 }

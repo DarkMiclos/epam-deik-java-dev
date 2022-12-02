@@ -41,14 +41,14 @@ public class BookingServiceImplTest {
     private static final List<Seat> CORRECT_LIST = List.of(CORRECT_SEAT);
     private static final List<Seat> INVALID_LIST = List.of(INVALID_SEAT);
     private static final User USER2 = new User("user", "user", USER);
-    private static final Booking CORRECT_ENTITY = new Booking(SCREENING, CORRECT_LIST, USER2);
+    private static final Booking CORRECT_ENTITY = new Booking(SCREENING, CORRECT_LIST, USER2, 1500);
     
     private static final BookingDto CORRECT_DTO = BookingDto.builder()
             .withScreening(SCREENING)
             .withListOfSeat(CORRECT_LIST)
             .build();
     
-    private static final Booking INVALID_ENTITY = new Booking(SCREENING, INVALID_LIST, USER2);
+    private static final Booking INVALID_ENTITY = new Booking(SCREENING, INVALID_LIST, USER2, 1500);
     private static final BookingDto INVALID_DTO = BookingDto.builder()
             .withScreening(SCREENING)
             .withListOfSeat(INVALID_LIST)

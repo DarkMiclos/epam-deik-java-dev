@@ -3,6 +3,10 @@ package com.epam.training.ticketservice.core.booking;
 import com.epam.training.ticketservice.core.booking.model.BookingDto;
 import com.epam.training.ticketservice.core.booking.persistence.entity.Booking;
 import com.epam.training.ticketservice.core.booking.persistence.repository.BookingRepository;
+import com.epam.training.ticketservice.core.pricecomponent.PriceComponentService;
+import com.epam.training.ticketservice.core.screening.ScreeningService;
+import com.epam.training.ticketservice.core.screening.model.ScreeningDto;
+import com.epam.training.ticketservice.core.screening.persistence.entity.Screening;
 import com.epam.training.ticketservice.core.user.UserService;
 import com.epam.training.ticketservice.core.user.model.UserDto;
 import com.epam.training.ticketservice.core.user.persistence.entity.User;
@@ -26,9 +30,15 @@ public class BookingServiceImpl implements BookingService {
         checkIfSeatExists(bookDto);
         checkIfSeatIsTaken(bookDto);
         Optional<User> user = userRepository.findByUsername(userService.describe().get().getUsername());
+        ScreeningDto screeningDto = ScreeningDto.builder()
+                .withMovie(bookDto.getScreening().getMovie())
+                .withRoom(bookDto.getScreening().getRoom())
+                .withBeginningDateOfScreening(bookDto.getScreening().getBeginningDateOfScreening())
+                .build();
         Booking book = new Booking(bookDto.getScreening(),
                 bookDto.getListOfSeats(),
-                user.get());
+                user.get(),
+                bookDto.getPrice());
         bookRepository.save(book);
     }
 
@@ -73,6 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
     private BookingDto convertFromEntityToDto(Booking booking) {
         return new BookingDto(booking.getScreening(),
-                booking.getListOfSeats());
+                booking.getListOfSeats(),
+                booking.getPrice());
     }
 }

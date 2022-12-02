@@ -28,10 +28,12 @@ public class Booking {
     private List<Seat> listOfSeats;
     @ManyToOne
     private User user;
+    private Integer price;
 
-    public Booking(Screening screening, List<Seat> listOfSeats, User user) {
+    public Booking(Screening screening, List<Seat> listOfSeats, User user, Integer price) {
         this.screening = screening;
         this.listOfSeats = listOfSeats;
         this.user = user;
+        this.price = price;
     }
 }

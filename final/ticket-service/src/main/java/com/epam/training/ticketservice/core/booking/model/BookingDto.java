@@ -10,6 +10,7 @@ import java.util.List;
 public class BookingDto {
     private final Screening screening;
     private final List<Seat> listOfSeats;
+    private final Integer price;
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +19,7 @@ public class BookingDto {
     public static class Builder {
         private Screening screening;
         private List<Seat> listOfSeats;
+        private Integer price;
         
         public Builder withScreening(Screening screening) {
             this.screening = screening;
@@ -29,8 +31,13 @@ public class BookingDto {
             return this;
         }
         
+        public Builder withPrice(Integer price) {
+            this.price = price;
+            return this;
+        }
+        
         public BookingDto build() {
-            return new BookingDto(screening, listOfSeats);
+            return new BookingDto(screening, listOfSeats, price);
         }
     }
 }

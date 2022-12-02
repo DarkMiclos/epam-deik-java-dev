@@ -24,6 +24,8 @@ public class UserCommand {
     private final BookingService bookingService;
     
     private final PriceComponentService priceComponentService;
+    
+    private final Helper helper = new Helper();
 
     @ShellMethod(key = "sign out", value = "User logout")
     public String signOut() {
@@ -92,14 +94,9 @@ public class UserCommand {
             output += " on " + booking.getScreening().getMovie().getName() + " ";
             output += "in room " + booking.getScreening().getRoom().getName() + " ";
             output += "starting at " 
-                    + convertDateToString(booking.getScreening().getBeginningDateOfScreening()) 
-                    + " for " + booking.getListOfSeats().size() * priceComponentService.getBasePrice() + " HUF";//Todo create price for booking
+                    + helper.convertDateToString(booking.getScreening().getBeginningDateOfScreening()) 
+                    + " for " + booking.getListOfSeats().size() * booking.getPrice() + " HUF";
         }
         return output;
-    }
-
-    private String convertDateToString(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm")
-                .format(date);
     }
 }
